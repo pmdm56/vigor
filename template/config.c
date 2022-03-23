@@ -19,7 +19,7 @@
   exit(EXIT_FAILURE);
 
 void nf_config_init(int argc, char **argv) {
-  uint16_t nb_devices = rte_eth_dev_count();
+  uint16_t nb_devices = rte_eth_dev_count_avail();
 
   struct option long_options[] = {{"eth-dest", required_argument, NULL, 'm'},
                                   {NULL, 0, NULL, 0}};
@@ -66,7 +66,7 @@ void nf_config_usage(void) {
 void nf_config_print(void) {
   NF_INFO("\n--- Config ---\n");
 
-  uint16_t nb_devices = rte_eth_dev_count();
+  uint16_t nb_devices = rte_eth_dev_count_avail();
   for (uint16_t dev = 0; dev < nb_devices; dev++) {
     char *dev_mac_str = nf_mac_to_str(&(config.device_macs[dev]));
     char *end_mac_str = nf_mac_to_str(&(config.endpoint_macs[dev]));
