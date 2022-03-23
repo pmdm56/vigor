@@ -70,9 +70,12 @@ static struct nested_field_descr rte_ether_nested_fields[] = {
 
 void nf_log_pkt(struct rte_ether_hdr *rte_ether_header,
                 struct rte_ipv4_hdr *rte_ipv4_header,
+                struct rte_ipv6_hdr *rte_ipv6_header,
                 struct tcpudp_hdr *tcpudp_header);
 
 bool nf_has_rte_ipv4_header(struct rte_ether_hdr *header);
+bool nf_has_rte_ipv6_header(struct rte_ether_hdr *header);
+
 
 bool nf_has_tcpudp_header(struct rte_ipv4_hdr *header);
 
@@ -198,6 +201,32 @@ nf_then_get_rte_ipv4_header(void *rte_ether_header_, uint8_t **p,
   }
   return hdr;
 }
+
+static inline struct rte_ipv6_hdr *
+nf_then_get_rte_ipv6_header(void *rte_ether_header_, uint8_t **p) {
+  
+  struct rte_ether_hdr *rte_ether_header =
+      (struct rte_ether_hdr *)rte_ether_header_;
+
+
+  uint64_t unread_len = packet_get_unread_length(p);
+  if ((!nf_has_rte_ipv6_header(rte_ether_header)) |
+      (unread_len < sizeof(struct rte_ipv6_hdr))) {
+    return NULL;
+  }
+
+  //TODO
+  //CHUNK_LAYOUT(p, rte_ipv6_hdr, rte_ipv6_fields);
+  struct rte_ipv6_hdr *hdr = (struct rte_ipv6_hdr *)nf_borrow_next_chunk(
+      p, sizeof(struct rte_ipv6_hdr));
+
+  if (unread_len < rte_be_to_cpu_16(hdr->payload_len)) {
+    return NULL;
+  }
+
+  return hdr;
+}
+
 
 static inline struct tcpudp_hdr *
 nf_then_get_tcpudp_header(struct rte_ipv4_hdr *ip_header, uint8_t **p) {

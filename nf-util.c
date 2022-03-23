@@ -21,50 +21,96 @@ size_t chunks_borrowed_num = 0;
 
 void nf_log_pkt(struct rte_ether_hdr *rte_ether_header,
                 struct rte_ipv4_hdr *rte_ipv4_header,
+                struct rte_ipv6_hdr *rte_ipv6_header,
                 struct tcpudp_hdr *tcpudp_header) {
-  NF_INFO("###[ Ethernet ]###");
-  NF_INFO("  dst  %02x:%02x:%02x:%02x:%02x:%02x",
-          rte_ether_header->d_addr.addr_bytes[0],
-          rte_ether_header->d_addr.addr_bytes[1],
-          rte_ether_header->d_addr.addr_bytes[2],
-          rte_ether_header->d_addr.addr_bytes[3],
-          rte_ether_header->d_addr.addr_bytes[4],
-          rte_ether_header->d_addr.addr_bytes[5]);
-  NF_INFO("  src  %02x:%02x:%02x:%02x:%02x:%02x",
-          rte_ether_header->s_addr.addr_bytes[0],
-          rte_ether_header->s_addr.addr_bytes[1],
-          rte_ether_header->s_addr.addr_bytes[2],
-          rte_ether_header->s_addr.addr_bytes[3],
-          rte_ether_header->s_addr.addr_bytes[4],
-          rte_ether_header->s_addr.addr_bytes[5]);
-  NF_INFO("  type 0x%x", rte_bswap16(rte_ether_header->ether_type));
+  if(rte_ether_header){
+    NF_INFO("###[ Ethernet ]###");
+    NF_INFO("  dst  %02x:%02x:%02x:%02x:%02x:%02x",
+            rte_ether_header->d_addr.addr_bytes[0],
+            rte_ether_header->d_addr.addr_bytes[1],
+            rte_ether_header->d_addr.addr_bytes[2],
+            rte_ether_header->d_addr.addr_bytes[3],
+            rte_ether_header->d_addr.addr_bytes[4],
+            rte_ether_header->d_addr.addr_bytes[5]);
+    NF_INFO("  src  %02x:%02x:%02x:%02x:%02x:%02x",
+            rte_ether_header->s_addr.addr_bytes[0],
+            rte_ether_header->s_addr.addr_bytes[1],
+            rte_ether_header->s_addr.addr_bytes[2],
+            rte_ether_header->s_addr.addr_bytes[3],
+            rte_ether_header->s_addr.addr_bytes[4],
+            rte_ether_header->s_addr.addr_bytes[5]);
+    NF_INFO("  type 0x%x", rte_bswap16(rte_ether_header->ether_type));
+  }
 
-  NF_INFO("###[ IP ]###");
-  NF_INFO("  ihl     %u", (rte_ipv4_header->version_ihl & 0x0f));
-  NF_INFO("  version %u", (rte_ipv4_header->version_ihl & 0xf0) >> 4);
-  NF_INFO("  tos     %u", rte_ipv4_header->type_of_service);
-  NF_INFO("  len     %u", rte_bswap16(rte_ipv4_header->total_length));
-  NF_INFO("  id      %u", rte_bswap16(rte_ipv4_header->packet_id));
-  NF_INFO("  off     %u", rte_bswap16(rte_ipv4_header->fragment_offset));
-  NF_INFO("  ttl     %u", rte_ipv4_header->time_to_live);
-  NF_INFO("  proto   %u", rte_ipv4_header->next_proto_id);
-  NF_INFO("  chksum  0x%x", rte_bswap16(rte_ipv4_header->hdr_checksum));
-  NF_INFO("  src     %u.%u.%u.%u", (rte_ipv4_header->src_addr >> 0) & 0xff,
-          (rte_ipv4_header->src_addr >> 8) & 0xff,
-          (rte_ipv4_header->src_addr >> 16) & 0xff,
-          (rte_ipv4_header->src_addr >> 24) & 0xff);
-  NF_INFO("  dst     %u.%u.%u.%u", (rte_ipv4_header->dst_addr >> 0) & 0xff,
-          (rte_ipv4_header->dst_addr >> 8) & 0xff,
-          (rte_ipv4_header->dst_addr >> 16) & 0xff,
-          (rte_ipv4_header->dst_addr >> 24) & 0xff);
+  
+  if(rte_ipv4_header){
+    NF_INFO("###[ IPv4 ]###");
+    NF_INFO("  ihl     %u", (rte_ipv4_header->version_ihl & 0x0f));
+    NF_INFO("  version %u", (rte_ipv4_header->version_ihl & 0xf0) >> 4);
+    NF_INFO("  tos     %u", rte_ipv4_header->type_of_service);
+    NF_INFO("  len     %u", rte_bswap16(rte_ipv4_header->total_length));
+    NF_INFO("  id      %u", rte_bswap16(rte_ipv4_header->packet_id));
+    NF_INFO("  off     %u", rte_bswap16(rte_ipv4_header->fragment_offset));
+    NF_INFO("  ttl     %u", rte_ipv4_header->time_to_live);
+    NF_INFO("  proto   %u", rte_ipv4_header->next_proto_id);
+    NF_INFO("  chksum  0x%x", rte_bswap16(rte_ipv4_header->hdr_checksum));
+    NF_INFO("  src     %u.%u.%u.%u", (rte_ipv4_header->src_addr >> 0) & 0xff,
+            (rte_ipv4_header->src_addr >> 8) & 0xff,
+            (rte_ipv4_header->src_addr >> 16) & 0xff,
+            (rte_ipv4_header->src_addr >> 24) & 0xff);
+    NF_INFO("  dst     %u.%u.%u.%u", (rte_ipv4_header->dst_addr >> 0) & 0xff,
+            (rte_ipv4_header->dst_addr >> 8) & 0xff,
+            (rte_ipv4_header->dst_addr >> 16) & 0xff,
+            (rte_ipv4_header->dst_addr >> 24) & 0xff);
+  } else if (rte_ipv6_header){
+    NF_INFO("###[ IPv6 ]###");
+    NF_INFO("  payload_len  %u", rte_bswap16(rte_ipv6_header->payload_len));
+    NF_INFO("  proto        %u", rte_ipv6_header->proto)
+    NF_INFO("  hop_limits   %u", rte_ipv6_header->hop_limits)
+    NF_INFO("  src          %04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", (uint16_t)rte_ipv6_header->src_addr[0],
+                                                      (uint16_t)rte_ipv6_header->src_addr[2],
+                                                      (uint16_t)rte_ipv6_header->src_addr[4],
+                                                      (uint16_t)rte_ipv6_header->src_addr[6],
+                                                      (uint16_t)rte_ipv6_header->src_addr[8],
+                                                      (uint16_t)rte_ipv6_header->src_addr[10],
+                                                      (uint16_t)rte_ipv6_header->src_addr[12],
+                                                      (uint16_t)rte_ipv6_header->src_addr[14]);
+    NF_INFO("  dst          %04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", (uint16_t)rte_ipv6_header->dst_addr[0],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[2],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[4],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[6],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[8],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[10],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[12],
+                                                      (uint16_t)rte_ipv6_header->dst_addr[14]);
+  }
 
-  NF_INFO("###[ UDP ]###");
-  NF_INFO("  sport   %u", rte_bswap16(tcpudp_header->src_port));
-  NF_INFO("  dport   %u", rte_bswap16(tcpudp_header->dst_port));
+  if(tcpudp_header){
+    NF_INFO("###[ UDP ]###");
+    NF_INFO("  sport   %u", rte_bswap16(tcpudp_header->src_port));
+    NF_INFO("  dport   %u", rte_bswap16(tcpudp_header->dst_port));
+  }
 }
+
+
+
+/*
+struct rte_ipv6_hdr {
+	rte_be32_t vtc_flow;
+	rte_be16_t payload_len;
+	uint8_t  proto;		
+	uint8_t  hop_limits;	
+	uint8_t  src_addr[16];	
+	uint8_t  dst_addr[16];
+} __rte_packed;
+*/
 
 bool nf_has_rte_ipv4_header(struct rte_ether_hdr *header) {
   return header->ether_type == rte_be_to_cpu_16(RTE_ETHER_TYPE_IPV4);
+}
+
+bool nf_has_rte_ipv6_header(struct rte_ether_hdr *header){
+  return header->ether_type == rte_be_to_cpu_16(RTE_ETHER_TYPE_IPV6);
 }
 
 bool nf_has_tcpudp_header(struct rte_ipv4_hdr *header) {
