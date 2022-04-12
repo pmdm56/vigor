@@ -1,0 +1,42 @@
+EAL: Detected 8 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Static memory layout is selected, amount of reserved memory can be adjusted with -m or --socket-mem
+EAL: Selected IOVA mode 'VA'
+EAL: Probing VFIO support...
+EAL: VFIO support initialized
+EAL: No legacy callbacks, legacy socket not created
+
+--- FW Config ---
+
+WAN device: 1
+Device 0 own-mac: AA:F3:D7:D7:EE:89, end-mac: 04:A1:8E:AF:8A:55
+Device 1 own-mac: 3A:D2:B0:1A:AD:88, end-mac: 02:A9:49:D7:FB:01
+Expiration time: 100000000us
+Max flows: 65536
+
+--- --- ------ ---
+
+Initialized device 0.
+Initialized device 1.
+Core 0 forwarding packets.
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not TCP/UDP, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not TCP/UDP, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not TCP/UDP, dropping
+Not TCP/UDP, dropping
+Not TCP/UDP, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping

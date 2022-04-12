@@ -9,6 +9,7 @@
 #include "libvig/verified/map.h"
 #include "libvig/verified/vector.h"
 #include "libvig/verified/expirator.h"
+#include "nf-log.h"
 
 #include "state.h"
 
@@ -78,6 +79,7 @@ bool flow_manager_get_refresh_flow(struct FlowManager *manager,
   if (map_get(manager->state->fm, id, &index) == 0) {
     return false;
   }
+  NF_INFO("Its a known flow on device %u", *internal_device);
   uint32_t *int_dev;
   vector_borrow(manager->state->int_devices, index, (void **)&int_dev);
   *internal_device = *int_dev;

@@ -93,18 +93,6 @@ void nf_log_pkt(struct rte_ether_hdr *rte_ether_header,
 }
 
 
-
-/*
-struct rte_ipv6_hdr {
-	rte_be32_t vtc_flow;
-	rte_be16_t payload_len;
-	uint8_t  proto;		
-	uint8_t  hop_limits;	
-	uint8_t  src_addr[16];	
-	uint8_t  dst_addr[16];
-} __rte_packed;
-*/
-
 bool nf_has_rte_ipv4_header(struct rte_ether_hdr *header) {
   return header->ether_type == rte_be_to_cpu_16(RTE_ETHER_TYPE_IPV4);
 }
