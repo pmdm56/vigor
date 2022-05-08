@@ -6,10 +6,11 @@ import argparse
 import os
 import subprocess
 
-SYNTHESIZED_DIR = pathlib.Path(__file__).parent.absolute()
+SYNTHESIZED_DIR = pathlib.Path(__file__).parent.parent.absolute()
 
 BOILERPLATE_DIR = f"{SYNTHESIZED_DIR}/boilerplate"
 SYNTHESIZED_BUILD = f"{SYNTHESIZED_DIR}/build"
+MAKEFILES_DIR=f"{SYNTHESIZED_DIR}/makefiles"
 
 SYNTHESIZED_APP = f"{SYNTHESIZED_BUILD}/app"
 SYNTHESIZED_CODE = f"{SYNTHESIZED_BUILD}/synthesized"
@@ -28,6 +29,15 @@ BOILERPLATE_CHOICE_LOCKS = "locks"
 BOILERPLATE_CHOICE_SQ = "sequential"
 BOILERPLATE_CHOICE_SN = "shared-nothing"
 BOILERPLATE_CHOICE_TM = "tm"
+
+BOILERPLATE_TO_MAKEFILE = {
+  BOILERPLATE_CHOICE_BMV2: f"{MAKEFILES_DIR}/Makefile.bmv2_controller",
+  BOILERPLATE_CHOICE_CALL_PATH_HITTER: f"{MAKEFILES_DIR}/Makefile.cph",
+  BOILERPLATE_CHOICE_LOCKS: f"{MAKEFILES_DIR}/Makefile.maestro",
+  BOILERPLATE_CHOICE_SQ: f"{MAKEFILES_DIR}/Makefile.maestro",
+  BOILERPLATE_CHOICE_SN: f"{MAKEFILES_DIR}/Makefile.maestro",
+  BOILERPLATE_CHOICE_TM: f"{MAKEFILES_DIR}/Makefile.maestro",
+}
 
 def build_impl(boilerplate, impl):
   complete_impl = ""
@@ -58,7 +68,10 @@ def get_original_nf_srcs(nf):
 
   return original_nf_files
 
-def build_makefile(extra_vars_makefile, nf, srcs):
+def build_makefile(boilerplate, nf, srcs):
+  assert boilerplate in BOILERPLATE_TO_MAKEFILE
+  extra_vars_makefile = BOILERPLATE_TO_MAKEFILE[boilerplate]
+
   MAKEFILE = ""
   for f in srcs:
     if len(MAKEFILE) == 0:
@@ -80,12 +93,12 @@ def build_makefile(extra_vars_makefile, nf, srcs):
   makefile.write(MAKEFILE)
   makefile.close()
 
-def build(boilerplate, impl, nf, extra_vars_makefile):
+def build(boilerplate, impl, nf):
   build_impl(boilerplate, impl)
   srcs = get_original_nf_srcs(nf)
-  build_makefile(extra_vars_makefile, nf, srcs)
+  build_makefile(boilerplate, nf, srcs)
 
-  subprocess.call([ "make", "-f", "Makefile.nf" ], cwd=SYNTHESIZED_BUNDLE)
+  subprocess.call([ "make", "-f", "Makefile.nf" ], cwd=SYNTHESIZED_BUNDLE)#, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
   subprocess.call([ "cp" ] +  glob.glob(f"{SYNTHESIZED_BUNDLE}/build/app/*") + [ f"{SYNTHESIZED_APP}/" ])
   
 if __name__ == "__main__":
@@ -102,7 +115,6 @@ if __name__ == "__main__":
       BOILERPLATE_CHOICE_SN,
       BOILERPLATE_CHOICE_TM,
     ])
-  parser.add_argument('extra_vars_makefile', type=str, help='path to the Makefile containing the extra vars')
   parser.add_argument('--nf', type=str, help='path to the original NF')
 
   args = parser.parse_args()
@@ -110,4 +122,4 @@ if __name__ == "__main__":
   if args.nf:
     args.nf = os.path.abspath(args.nf)
 
-  build(args.boilerplate, args.impl, args.nf, args.extra_vars_makefile)
+  build(args.boilerplate, args.impl, args.nf)

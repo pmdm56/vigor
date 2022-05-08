@@ -470,11 +470,11 @@ int nf_process(uint16_t device, uint8_t *buffer, uint16_t packet_length,
 #define VIGOR_LOOP_END
 
 // Do the opposite: we want batching!
-static const uint16_t RX_QUEUE_SIZE = 128;
-static const uint16_t TX_QUEUE_SIZE = 128;
+static const uint16_t RX_QUEUE_SIZE = 256;
+static const uint16_t TX_QUEUE_SIZE = 256;
 
 // Buffer count for mempools
-static const unsigned MEMPOOL_BUFFER_COUNT = 256;
+static const unsigned MEMPOOL_BUFFER_COUNT = 512;
 
 // Send the given packet to all devices except the packet's own
 void flood(struct rte_mbuf *packet, uint16_t nb_devices, uint16_t queue_id) {
@@ -506,13 +506,6 @@ static int nf_init_device(uint16_t device, struct rte_mempool **mbuf_pools) {
   device_conf.rx_adv_conf.rss_conf = rss_conf[device];
 
   retval = rte_eth_dev_configure(device, num_queues, num_queues, &device_conf);
-  if (retval != 0) {
-    return retval;
-  }
-
-  // Allocate and set up a TX queue (NULL == default config)
-  retval = rte_eth_tx_queue_setup(device, 0, TX_QUEUE_SIZE,
-                                  rte_eth_dev_socket_id(device), NULL);
   if (retval != 0) {
     return retval;
   }
