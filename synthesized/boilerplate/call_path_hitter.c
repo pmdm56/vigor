@@ -46,6 +46,7 @@
 #include "libvig/verified/expirator.h"
 #include "libvig/verified/cht.h"
 
+#include "libvig/unverified/sketch.h"
 #include "libvig/unverified/expirator.h"
 
 /**********************************************
@@ -323,11 +324,11 @@ int nf_process(uint16_t device, uint8_t *buffer, uint16_t packet_length,
 #define VIGOR_LOOP_END
 
 // Do the opposite: we want batching!
-static const uint16_t RX_QUEUE_SIZE = 128;
-static const uint16_t TX_QUEUE_SIZE = 128;
+static const uint16_t RX_QUEUE_SIZE = 256;
+static const uint16_t TX_QUEUE_SIZE = 256;
 
 // Buffer count for mempools
-static const unsigned MEMPOOL_BUFFER_COUNT = 256;
+static const unsigned MEMPOOL_BUFFER_COUNT = 512;
 
 // Send the given packet to all devices except the packet's own
 void flood(struct rte_mbuf *packet, uint16_t nb_devices) {
@@ -466,28 +467,47 @@ void load_pkts(const char *pcap, unsigned device) {
   pcap_close(descr);
 }
 
+struct device_conf_t {
+  uint16_t device_id;
+  const char* pcap;
+};
+
+struct config_t {
+  struct device_conf_t* devices_conf;
+  uint16_t devices;
+  uint32_t loops;
+};
+
+struct config_t config;
+
 // Main worker method (for now used on a single thread...)
 static void worker_main() {
   if (!nf_init()) {
     rte_exit(EXIT_FAILURE, "Error initializing NF");
   }
 
-  int threshold = 0;
-  for (unsigned pkti = 0; pkti < pkts.n_pkts; pkti++) {
-    struct pkt pkt = pkts.pkts[pkti];
+  vigor_time_t last_ts = 0;
+  vigor_time_t base_ts = 0;
+  for (unsigned loop_it = 0; loop_it < config.loops; loop_it++) {
+    for (unsigned pkti = 0; pkti < pkts.n_pkts; pkti++) {
+      struct pkt pkt = pkts.pkts[pkti];
+      vigor_time_t current_time = pkt.ts + base_ts;
 
-    if ((int)(100 * (pkti + 1) / (double)pkts.n_pkts) >= threshold) {
-      printf("\rProcessing packets (%d%%)",
-             (int)(100 * (pkti + 1) / (double)pkts.n_pkts));
+      printf("\rProcessing packets (%02d %% | loop %d/%d) ...",
+            (int)(100 * (pkti + 1) / (double)pkts.n_pkts),
+            loop_it+1, config.loops);
       fflush(stdout);
-      threshold += 1;
+
+      packet_state_total_length(pkt.pkt, &(pkt.pktlen));
+
+      // ignore destination device, we don't forward anywhere
+      nf_process(pkt.device, pkt.pkt, pkt.pktlen, current_time);
+      nf_return_all_chunks(pkt.pkt);
+
+      last_ts = current_time;
     }
 
-    packet_state_total_length(pkt.pkt, &(pkt.pktlen));
-
-    // ignore destination device, we don't forward anywhere
-    nf_process(pkt.device, pkt.pkt, pkt.pktlen, pkt.ts);
-    nf_return_all_chunks(pkt.pkt);
+    base_ts = last_ts;
   }
 
   printf("\n");
@@ -495,36 +515,110 @@ static void worker_main() {
 
   printf("Generating report...\n");
 
-  FILE *report = fopen("report.txt", "w");
+  FILE *report = fopen("nf-cph.tsv", "w");
+  fprintf(report, "#cp\thits\n");
   for (unsigned i = 0; i < call_path_hit_counter_sz; i++) {
-    if (i != 0) {
-      fprintf(report, " ");
-    }
-    fprintf(report, "%lu", call_path_hit_counter_ptr[i]);
+    fprintf(report, "%u\t%lu\n", i, call_path_hit_counter_ptr[i]);
   }
-  fprintf(report, "\n");
   fclose(report);
 
   exit(0);
 }
 
+void nf_config_usage(void) {
+  NF_INFO(
+      "Usage:\n"
+      "[DPDK EAL options] -- [<device:pcap> ...] --loops <loops>\n"
+      "\n"
+      "\t device: networking device to feed the pcap\n"
+      "\t pcap: traffic trace to analyze\n"
+      "\t loops: number of times to loop the pcap\n");
+}
+
+void nf_config_print(void) {
+  NF_INFO("\n--- Config ---\n");
+
+  for (uint16_t device = 0; device < config.devices; device++) {
+    NF_INFO("device: %" PRIu16 " PCAP:%s", device, config.devices_conf[device].pcap);
+  }
+  NF_INFO("loops: %" PRIu32, config.loops);
+
+  NF_INFO("\n--- --- ------ ---\n");
+}
+
+#define PARSE_ERROR(format, ...)          \
+  nf_config_usage();                      \
+  fprintf(stderr, format, ##__VA_ARGS__); \
+  exit(EXIT_FAILURE);
+
+void nf_config_init_device(uint16_t device_id) {
+  for (int i = 0; i < config.devices; i++) {
+    if (config.devices_conf[i].device_id == device_id) {
+      PARSE_ERROR("Duplicated device: %" PRIu16 ".", device_id);
+    }
+  }
+  
+  config.devices++;
+  config.devices_conf = (struct device_conf_t*) realloc(
+    config.devices_conf,
+    sizeof(struct device_conf_t) * config.devices);
+
+  config.devices_conf[config.devices - 1].pcap = NULL;
+  config.devices_conf[config.devices - 1].device_id = device_id;
+
+}
 void nf_config_init(int argc, char **argv) {
+  config.devices = 0;
+  config.loops = 1;
+
+  struct option long_options[] = {
+    {"loops", required_argument, NULL, 'l'},
+    { NULL, 0, NULL, 0}};
+ 
+  int opt;
+  opterr = 0;
+  while ((opt = getopt_long(argc, argv, "l:", long_options, NULL)) != EOF) {
+    switch (opt) {
+      case 'l': {
+        config.loops = nf_util_parse_int(optarg, "loops", 10, '\0');
+        break;
+      }
+
+      default:
+        PARSE_ERROR("Unknown option.\n");
+    }
+  }
+
+  for (int iarg = optind; iarg < argc; iarg++) {
+    const char* delim = ":";
+    char* token;
+    
+    token = strtok(argv[iarg], delim);
+    if (token == NULL) {
+      PARSE_ERROR("Missing \"device\" argument.\n");
+    }
+
+    uint16_t device_id = nf_util_parse_int(token, "device", 10, '\0');
+    nf_config_init_device(device_id);
+
+    token = strtok(NULL, delim);
+    if (token == NULL) {
+      PARSE_ERROR("Missing \"pcap\" argument.\n");
+    }
+
+    if (access(token, F_OK) != 0) {
+      PARSE_ERROR("No such file \"%s\".\n", token);
+    }
+
+    config.devices_conf[config.devices - 1].pcap = token;
+  }
+  
   pkts.pkts = NULL;
   pkts.n_pkts = 0;
   pkts.reserved = 0;
 
-  if (argc <= 1) {
-    rte_exit(EXIT_FAILURE, "Provide at least 1 path to a pcap.\n");
-  }
-
-  for (int argi = 1; argi < argc; argi++) {
-    unsigned device = argi - 1;
-    const char *pcap = argv[argi];
-    if (access(pcap, F_OK) != 0) {
-      rte_exit(EXIT_FAILURE, "Invalid file \"%s\".\n", pcap);
-    }
-
-    load_pkts(pcap, device);
+  for (int i = 0; i < config.devices; i++) {
+    load_pkts(config.devices_conf[i].pcap, config.devices_conf[i].device_id);
   }
 
   printf("Sorting %u packets...\n", pkts.n_pkts);
@@ -549,6 +643,7 @@ int MAIN(int argc, char **argv) {
   argv += ret;
 
   nf_config_init(argc, argv);
+  nf_config_print();
 
   // Run!
   worker_main();
