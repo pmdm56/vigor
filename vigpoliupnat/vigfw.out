@@ -1,0 +1,310 @@
+EAL: Detected 8 lcore(s)
+EAL: Detected 1 NUMA nodes
+EAL: Static memory layout is selected, amount of reserved memory can be adjusted with -m or --socket-mem
+EAL: Selected IOVA mode 'VA'
+EAL: Probing VFIO support...
+EAL: VFIO support initialized
+EAL: No legacy callbacks, legacy socket not created
+
+--- FW Config ---
+
+WAN device: 1
+Device 0 own-mac: BE:56:C5:ED:17:83, end-mac: 02:D4:8B:8E:A3:E3
+Device 1 own-mac: 92:35:FA:ED:04:7D, end-mac: 04:81:9A:8C:26:4C
+Expiration time: 100000000us
+Max flows: 65536
+
+--- --- ------ ---
+
+Initialized device 0.
+Initialized device 1.
+Core 0 forwarding packets.
+Not IPv4, dropping
+Not IPv4, dropping
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+Not IPv4, dropping
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+Not IPv4, dropping
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+Not IPv4, dropping
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+Not IPv4, dropping
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+[Policer] Received packet
+[Policer] Outgoing packet. Not policing.
+[Firewall] Received packet
+Its a known flow on device 0
+[Policer] Received packet
+[Policer] Incoming packet within policed rate. Forwarding.
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
+Not IPv4, dropping
