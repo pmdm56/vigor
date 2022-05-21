@@ -21,7 +21,6 @@ size_t chunks_borrowed_num = 0;
 
 void nf_log_pkt(struct rte_ether_hdr *rte_ether_header,
                 struct rte_ipv4_hdr *rte_ipv4_header,
-                struct rte_ipv6_hdr *rte_ipv6_header,
                 struct tcpudp_hdr *tcpudp_header) {
   if(rte_ether_header){
     NF_INFO("###[ Ethernet ]###");
@@ -62,27 +61,6 @@ void nf_log_pkt(struct rte_ether_hdr *rte_ether_header,
             (rte_ipv4_header->dst_addr >> 8) & 0xff,
             (rte_ipv4_header->dst_addr >> 16) & 0xff,
             (rte_ipv4_header->dst_addr >> 24) & 0xff);
-  } else if (rte_ipv6_header){
-    NF_INFO("###[ IPv6 ]###");
-    NF_INFO("  payload_len  %u", rte_bswap16(rte_ipv6_header->payload_len));
-    NF_INFO("  proto        %u", rte_ipv6_header->proto)
-    NF_INFO("  hop_limits   %u", rte_ipv6_header->hop_limits)
-    NF_INFO("  src          %04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", (uint16_t)rte_ipv6_header->src_addr[0],
-                                                      (uint16_t)rte_ipv6_header->src_addr[2],
-                                                      (uint16_t)rte_ipv6_header->src_addr[4],
-                                                      (uint16_t)rte_ipv6_header->src_addr[6],
-                                                      (uint16_t)rte_ipv6_header->src_addr[8],
-                                                      (uint16_t)rte_ipv6_header->src_addr[10],
-                                                      (uint16_t)rte_ipv6_header->src_addr[12],
-                                                      (uint16_t)rte_ipv6_header->src_addr[14]);
-    NF_INFO("  dst          %04x:%04x:%04x:%04x:%04x:%04x:%04x:%04x", (uint16_t)rte_ipv6_header->dst_addr[0],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[2],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[4],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[6],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[8],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[10],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[12],
-                                                      (uint16_t)rte_ipv6_header->dst_addr[14]);
   }
 
   if(tcpudp_header){
@@ -97,9 +75,6 @@ bool nf_has_rte_ipv4_header(struct rte_ether_hdr *header) {
   return header->ether_type == rte_be_to_cpu_16(RTE_ETHER_TYPE_IPV4);
 }
 
-bool nf_has_rte_ipv6_header(struct rte_ether_hdr *header){
-  return header->ether_type == rte_be_to_cpu_16(RTE_ETHER_TYPE_IPV6);
-}
 
 bool nf_has_tcpudp_header(struct rte_ipv4_hdr *header) {
   // NOTE: Use non-short-circuiting version of OR, so that symbex doesn't fork

@@ -396,3 +396,7 @@ bdd: symbex
 		-out nf.bdd \
 		-gv nf.gv \
 		klee-last/*.call_path
+		
+merge-bdds:
+	$(KLEE_BUILD_PATH)/bin/merge-bdds \
+		-bdds test/*.bdd
